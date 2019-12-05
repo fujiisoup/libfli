@@ -1,0 +1,2132 @@
+\documentclass{article}
+\usepackage{docxx}
+\begin{document}
+\pagebreak
+\sloppy
+\cxxAuthor{
+Finger Lakes Instrumentation \\
+Copyright (c) 2000-2002 Finger Lakes Instrumentation (FLI), LLC. \\
+All rights reserved.
+\strut}
+\cxxVersion{
+1.40
+\strut}
+\cxxTitle{}
+        {FLI Software Development Library}
+        {}
+        {Windows and Linux support for FLI CCD cameras, filter wheels, and focusers. }
+        {}
+\begin{cxxContents}
+\cxxContentsEntry{1}{Introduction}{}
+\cxxContentsEntry{2}{Library Defined Types }{}
+\cxxContentsEntry{3}{Library Functions }{}
+\end{cxxContents}
+\clearpage\pagebreak
+\begin{cxxdoc}
+
+
+\end{cxxdoc}
+\begin{cxxentry}
+{}
+        {Introduction}
+        {}
+        {}
+        {1}
+\begin{cxxdoc}
+
+This library provides a core set of functions for programming
+FLI CCD cameras, filter wheels, and focusers under Windows and
+Linux.  The type definitions, function prototypes, and
+definitions/enumerations of constant values used by library
+functions are spcified in \texttt{libfli.h}.  All library
+functions return zero on sucessful completion, and non-zero if
+an error occurred.  The exact nature of an error can be found by
+treating the negative of a function's return value as a system
+error code, for example:
+
+\begin{verbatim}
+      if ((err = FLIOpen(&dev, name, domain)))
+      {
+        fprintf(stderr, "Error FLIOpen: %s\n", strerror((int)-err));
+        exit(1);
+      }
+      \end{verbatim}
+
+\end{cxxdoc}
+\end{cxxentry}
+\begin{cxxentry}
+{}
+        {Library Defined Types }
+        {}
+        {}
+        {2}
+\begin{cxxnames}
+\cxxitem{\#define}
+        {FLI\_INVALID\_DEVICE}
+        {(-1)}
+        { An opaque handle used by library functions to refer to FLI hardware}
+        {2.1}
+\cxxitem{typedef\ \ long}
+        {flidomain\_t}
+        {}
+        { The domain of an FLI device.}
+        {2.2}
+\cxxitem{typedef\ \ long}
+        {fliframe\_t}
+        {}
+        { The frame type for an FLI CCD camera device.}
+        {2.3}
+\cxxitem{typedef\ \ long}
+        {flibitdepth\_t}
+        {}
+        { The gray-scale bit depth for an FLI camera device.}
+        {2.4}
+\cxxitem{typedef\ \ long}
+        {flishutter\_t}
+        {}
+        { Type used for shutter operations for an FLI camera device.}
+        {2.5}
+\cxxitem{typedef\ \ long}
+        {flibgflush\_t}
+        {}
+        { Type used for background flush operations for an FLI camera device.}
+        {2.6}
+\cxxitem{typedef\ \ long}
+        {flichannel\_t}
+        {}
+        { Type used to determine which temperature channel to read.}
+        {2.7}
+\cxxitem{typedef\ \ long}
+        {flidebug\_t}
+        {}
+        { Type specifying library debug levels.}
+        {2.8}
+\end{cxxnames}
+\begin{cxxmacro}
+{\#define}
+        {FLI\_INVALID\_DEVICE}
+        {(-1)}
+        { An opaque handle used by library functions to refer to FLI hardware}
+        {2.1}
+\begin{cxxdoc}
+
+An opaque handle used by library functions to refer to FLI
+hardware
+\end{cxxdoc}
+\end{cxxmacro}
+\begin{cxxentry}
+{typedef\ \ long}
+        {flidomain\_t}
+        {}
+        { The domain of an FLI device.}
+        {2.2}
+\cxxSee{FLIOpen
+\\
+FLIList\strut}
+\begin{cxxdoc}
+
+The domain of an FLI device.  This consists of a bitwise ORed
+combination of interface method and device type.  Valid interfaces
+are \texttt{FLIDOMAIN\_PARALLEL\_PORT}, \texttt{FLIDOMAIN\_USB},
+\texttt{FLIDOMAIN\_SERIAL}, and \texttt{FLIDOMAIN\_INET}.  Valid
+device types are \texttt{FLIDEVICE\_CAMERA},
+\texttt{FLIDOMAIN\_FILTERWHEEL}, and \texttt{FLIDOMAIN\_FOCUSER}.
+
+
+\end{cxxdoc}
+\end{cxxentry}
+\begin{cxxentry}
+{typedef\ \ long}
+        {fliframe\_t}
+        {}
+        { The frame type for an FLI CCD camera device.}
+        {2.3}
+\cxxSee{FLISetFrameType\strut}
+\begin{cxxdoc}
+
+The frame type for an FLI CCD camera device.  Valid frame types are
+\texttt{FLI\_FRAME\_TYPE\_NORMAL} and \texttt{FLI\_FRAME\_TYPE\_DARK}.
+
+
+\end{cxxdoc}
+\end{cxxentry}
+\begin{cxxentry}
+{typedef\ \ long}
+        {flibitdepth\_t}
+        {}
+        { The gray-scale bit depth for an FLI camera device.}
+        {2.4}
+\cxxSee{FLISetBitDepth\strut}
+\begin{cxxdoc}
+
+The gray-scale bit depth for an FLI camera device.  Valid bit
+depths are \texttt{FLI\_MODE\_8BIT} and \texttt{FLI\_MODE\_16BIT}.
+
+
+\end{cxxdoc}
+\end{cxxentry}
+\begin{cxxentry}
+{typedef\ \ long}
+        {flishutter\_t}
+        {}
+        { Type used for shutter operations for an FLI camera device.}
+        {2.5}
+\cxxSee{FLIControlShutter\strut}
+\begin{cxxdoc}
+
+Type used for shutter operations for an FLI camera device.  Valid
+shutter types are \texttt{FLI\_SHUTTER\_CLOSE},
+\texttt{FLI\_SHUTTER\_OPEN},
+\texttt{FLI\_SHUTTER\_EXTERNAL\_TRIGGER},
+\texttt{FLI\_SHUTTER\_EXTERNAL\_TRIGGER\_LOW}, and
+\texttt{FLI\_SHUTTER\_EXTERNAL\_TRIGGER\_HIGH}.
+
+
+\end{cxxdoc}
+\end{cxxentry}
+\begin{cxxentry}
+{typedef\ \ long}
+        {flibgflush\_t}
+        {}
+        { Type used for background flush operations for an FLI camera device.}
+        {2.6}
+\cxxSee{FLIControlBackgroundFlush\strut}
+\begin{cxxdoc}
+
+Type used for background flush operations for an FLI camera device.  Valid
+bgflush types are \texttt{FLI\_BGFLUSH\_STOP} and
+\texttt{FLI\_BGFLUSH\_START}.
+
+
+\end{cxxdoc}
+\end{cxxentry}
+\begin{cxxentry}
+{typedef\ \ long}
+        {flichannel\_t}
+        {}
+        { Type used to determine which temperature channel to read.}
+        {2.7}
+\cxxSee{FLIReadTemperature\strut}
+\begin{cxxdoc}
+
+Type used to determine which temperature channel to read.  Valid
+channel types are \texttt{FLI\_TEMPERATURE\_INTERNAL} and
+\texttt{FLI\_TEMPERATURE\_EXTERNAL}.
+
+
+\end{cxxdoc}
+\end{cxxentry}
+\begin{cxxentry}
+{typedef\ \ long}
+        {flidebug\_t}
+        {}
+        { Type specifying library debug levels.}
+        {2.8}
+\cxxSee{FLISetDebugLevel\strut}
+\begin{cxxdoc}
+
+Type specifying library debug levels.  Valid debug levels are
+\texttt{FLIDEBUG\_NONE}, \texttt{FLIDEBUG\_INFO},
+\texttt{FLIDEBUG\_WARN}, and \texttt{FLIDEBUG\_FAIL}.
+
+
+\end{cxxdoc}
+\end{cxxentry}
+\end{cxxentry}
+\begin{cxxentry}
+{}
+        {Library Functions }
+        {}
+        {}
+        {3}
+\begin{cxxnames}
+\cxxitem{LIBFLIAPI}
+        {FLICancelExposure}
+        {(flidev\_t\ dev)}
+        { Cancel an exposure for a given camera.}
+        {3.1}
+\cxxitem{LIBFLIAPI}
+        {FLIEndExposure}
+        {(flidev\_t\ dev)}
+        { End an exposure for a given camera.}
+        {3.2}
+\cxxitem{LIBFLIAPI}
+        {FLITriggerExposure}
+        {(flidev\_t\ dev)}
+        { Trigger an exposure that is awaiting an external trigger.}
+        {3.3}
+\cxxitem{LIBFLIAPI}
+        {FLIClose}
+        {(flidev\_t\ dev)}
+        { Close a handle to a FLI device  }
+        {3.4}
+\cxxitem{LIBFLIAPI}
+        {FLIGetArrayArea}
+        {(flidev\_t\ dev,\ long*\ ul\_x,\ long*\ ul\_y,\ long*\ lr\_x,\ long*\ lr\_y)}
+        { Get the array area of the given camera.}
+        {3.5}
+\cxxitem{LIBFLIAPI}
+        {FLIFlushRow}
+        {(flidev\_t\ dev,\ long\ rows,\ long\ repeat)}
+        { Flush rows of a given camera.}
+        {3.6}
+\cxxitem{LIBFLIAPI}
+        {FLIGetFWRevision}
+        {(flidev\_t\ dev,\ long*\ fwrev)}
+        { Get firmware revision of a given device  }
+        {3.7}
+\cxxitem{LIBFLIAPI}
+        {FLIGetHWRevision}
+        {(flidev\_t\ dev,\ long*\ hwrev)}
+        { Get the hardware revision of a given device  }
+        {3.8}
+\cxxitem{LIBFLIAPI}
+        {FLIGetLibVersion}
+        {(char*\ ver,\ size\_t\ len)}
+        { Get the current library version.}
+        {3.9}
+\cxxitem{LIBFLIAPI}
+        {FLIGetSerialString}
+        {(flidev\_t\ dev,\ char*\ serial,\ size\_t\ len)}
+        { Get the serial string of a given device.}
+        {3.10}
+\cxxitem{LIBFLIAPI}
+        {FLIGetModel}
+        {(flidev\_t\ dev,\ char*\ model,\ size\_t\ len)}
+        { Get the model of a given device.}
+        {3.11}
+\cxxitem{LIBFLIAPI}
+        {FLIGetPixelSize}
+        {(flidev\_t\ dev,\ double*\ pixel\_x,\ double*\ pixel\_y)}
+        { Find the dimensions of a pixel in the array of the given device  }
+        {3.12}
+\cxxitem{LIBFLIAPI}
+        {FLIGetVisibleArea}
+        {(flidev\_t\ dev,\ long*\ ul\_x,\ long*\ ul\_y,\ long*\ lr\_x,\ long*\ lr\_y)}
+        { Get the visible area of the given camera.}
+        {3.13}
+\cxxitem{LIBFLIAPI}
+        {FLIOpen}
+        {(flidev\_t*\ dev,\ char*\ name,\ flidomain\_t\ domain)}
+        { Get a handle to an FLI device.}
+        {3.14}
+\cxxitem{LIBFLIAPI}
+        {FLISetDebugLevel}
+        {(char*\ host,\ flidebug\_t\ level)}
+        { Enable debugging of API operations and communications.}
+        {3.15}
+\cxxitem{LIBFLIAPI}
+        {FLISetExposureTime}
+        {(flidev\_t\ dev,\ long\ exptime)}
+        { Set the exposure time for a camera.}
+        {3.16}
+\cxxitem{LIBFLIAPI}
+        {FLISetHBin}
+        {(flidev\_t\ dev,\ long\ hbin)}
+        { Set the horizontal bin factor for a given camera.}
+        {3.17}
+\cxxitem{LIBFLIAPI}
+        {FLISetFrameType}
+        {(flidev\_t\ dev,\ fliframe\_t\ frametype)}
+        { Set the frame type for a given camera.}
+        {3.18}
+\cxxitem{LIBFLIAPI}
+        {FLIGetCoolerPower}
+        {(flidev\_t\ dev,\ double*\ power)}
+        { Get the cooler power level.}
+        {3.19}
+\cxxitem{LIBFLIAPI}
+        {FLISetImageArea}
+        {(flidev\_t\ dev,\ long\ ul\_x,\ long\ ul\_y,\ long\ lr\_x,\ long\ lr\_y)}
+        { Set the image area for a given camera.}
+        {3.20}
+\cxxitem{LIBFLIAPI}
+        {FLISetVBin}
+        {(flidev\_t\ dev,\ long\ vbin)}
+        { Set the vertical bin factor for a given camera.}
+        {3.21}
+\cxxitem{LIBFLIAPI}
+        {FLIGetExposureStatus}
+        {(flidev\_t\ dev,\ long*\ timeleft)}
+        { Find the remaining exposure time of a given camera.}
+        {3.22}
+\cxxitem{LIBFLIAPI}
+        {FLISetTemperature}
+        {(flidev\_t\ dev,\ double\ temperature)}
+        { Set the temperature of a given camera.}
+        {3.23}
+\cxxitem{LIBFLIAPI}
+        {FLIGetTemperature}
+        {(flidev\_t\ dev,\ double*\ temperature)}
+        { Get the temperature of a given camera.}
+        {3.24}
+\cxxitem{LIBFLIAPI}
+        {FLIGrabRow}
+        {(flidev\_t\ dev,\ void*\ buff,\ size\_t\ width)}
+        { Grab a row of an image.}
+        {3.25}
+\cxxitem{LIBFLIAPI}
+        {FLIExposeFrame}
+        {(flidev\_t\ dev)}
+        { Expose a frame for a given camera.}
+        {3.26}
+\cxxitem{LIBFLIAPI}
+        {FLISetBitDepth}
+        {(flidev\_t\ dev,\ flibitdepth\_t\ bitdepth)}
+        { Set the gray-scale bit depth for a given camera.}
+        {3.27}
+\cxxitem{LIBFLIAPI}
+        {FLISetNFlushes}
+        {(flidev\_t\ dev,\ long\ nflushes)}
+        { Set the number of flushes for a given camera.}
+        {3.28}
+\cxxitem{LIBFLIAPI}
+        {FLIReadIOPort}
+        {(flidev\_t\ dev,\ long*\ ioportset)}
+        { Read the I/O port of a given camera.}
+        {3.29}
+\cxxitem{LIBFLIAPI}
+        {FLIWriteIOPort}
+        {(flidev\_t\ dev,\ long\ ioportset)}
+        { Write to the I/O port of a given camera.}
+        {3.30}
+\cxxitem{LIBFLIAPI}
+        {FLIConfigureIOPort}
+        {(flidev\_t\ dev,\ long\ ioportset)}
+        { Configure the I/O port of a given camera.}
+        {3.31}
+\cxxitem{LIBFLIAPI}
+        {FLILockDevice}
+        {(flidev\_t\ dev)}
+        { Lock a specified device.}
+        {3.32}
+\cxxitem{LIBFLIAPI}
+        {FLIUnlockDevice}
+        {(flidev\_t\ dev)}
+        { Unlock a specified device.}
+        {3.33}
+\cxxitem{LIBFLIAPI}
+        {FLIControlShutter}
+        {(flidev\_t\ dev,\ flishutter\_t\ shutter)}
+        { Control the shutter on a given camera.}
+        {3.34}
+\cxxitem{LIBFLIAPI}
+        {FLIControlBackgroundFlush}
+        {(flidev\_t\ dev,\ flibgflush\_t\ bgflush)}
+        { Enables background flushing of CCD array.}
+        {3.35}
+\cxxitem{LIBFLIAPI}
+        {FLIList}
+        {(flidomain\_t\ domain,\ char***\ names)}
+        { List available devices.}
+        {3.36}
+\cxxitem{LIBFLIAPI}
+        {FLIFreeList}
+        {(char**\ names)}
+        { Free a previously generated device list.}
+        {3.37}
+\cxxitem{LIBFLIAPI}
+        {FLISetFilterPos}
+        {(flidev\_t\ dev,\ long\ filter)}
+        { Set the filter wheel position of a given device.}
+        {3.38}
+\cxxitem{LIBFLIAPI}
+        {FLIGetFilterPos}
+        {(flidev\_t\ dev,\ long*\ filter)}
+        { Get the filter wheel position of a given device.}
+        {3.39}
+\cxxitem{LIBFLIAPI}
+        {FLIGetStepsRemaining}
+        {(flidev\_t\ dev,\ long*\ steps)}
+        { Get the number of motor steps remaining.}
+        {3.40}
+\cxxitem{LIBFLIAPI}
+        {FLIGetFilterCount}
+        {(flidev\_t\ dev,\ long*\ filter)}
+        { Get the filter wheel filter count of a given device.}
+        {3.41}
+\cxxitem{LIBFLIAPI}
+        {FLIStepMotorAsync}
+        {(flidev\_t\ dev,\ long\ steps)}
+        { Step the filter wheel or focuser motor of a given device.}
+        {3.42}
+\cxxitem{LIBFLIAPI}
+        {FLIStepMotor}
+        {(flidev\_t\ dev,\ long\ steps)}
+        { Step the filter wheel or focuser motor of a given device.}
+        {3.43}
+\cxxitem{LIBFLIAPI}
+        {FLIGetStepperPosition}
+        {(flidev\_t\ dev,\ long*\ position)}
+        { Get the stepper motor position of a given device.}
+        {3.44}
+\cxxitem{LIBFLIAPI}
+        {FLIHomeDevice}
+        {(flidev\_t\ dev)}
+        { Home focuser or filter wheel specified by \texttt{dev} The home position of a device is defined as where the electromechanical home sensor detects home.}
+        {3.45}
+\cxxitem{LIBFLIAPI}
+        {FLIHomeFocuser}
+        {(flidev\_t\ dev)}
+        { Home focuser \texttt{dev}.}
+        {3.46}
+\cxxitem{LIBFLIAPI}
+        {FLIGetFocuserExtent}
+        {(flidev\_t\ dev,\ long*\ extent)}
+        { Retreive the maximum extent for FLI focuser \texttt{dev}  }
+        {3.47}
+\cxxitem{LIBFLIAPI}
+        {FLIReadTemperature}
+        {(flidev\_t\ dev,\ flichannel\_t\ channel,\ double*\ temperature)}
+        { Retreive temperature from the FLI focuser \texttt{dev}.}
+        {3.48}
+\cxxitem{LIBFLIAPI}
+        {FLICreateList}
+        {(flidomain\_t\ domain)}
+        { Creates a list of all devices within a specified \texttt{domain}.}
+        {3.49}
+\cxxitem{LIBFLIAPI}
+        {FLIDeleteList}
+        {(void)}
+        { Deletes a list of devices created by \texttt{FLICreateList()}  }
+        {3.50}
+\cxxitem{LIBFLIAPI}
+        {FLIListFirst}
+        {(flidomain\_t*\ domain,\ char*\ filename,\ size\_t\ fnlen,\ char*\ name,\ size\_t\ namelen)}
+        { Obtains the first device in the list.}
+        {3.51}
+\cxxitem{LIBFLIAPI}
+        {FLIListNext}
+        {(flidomain\_t*\ domain,\ char*\ filename,\ size\_t\ fnlen,\ char*\ name,\ size\_t\ namelen)}
+        { Obtains the next device in the list.}
+        {3.52}
+\end{cxxnames}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLICancelExposure}
+        {(flidev\_t\ dev)}
+        { Cancel an exposure for a given camera.}
+        {3.1}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to cancel the exposure of.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIExposeFrame
+\\
+FLIEndExposure
+\\
+FLIGetExposureStatus
+\\
+FLISetExposureTime\strut}
+\begin{cxxdoc}
+
+Cancel an exposure for a given camera.  This function cancels an
+exposure in progress by closing the shutter.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIEndExposure}
+        {(flidev\_t\ dev)}
+        { End an exposure for a given camera.}
+        {3.2}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to end the exposure of.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIExposeFrame
+\\
+FLICancelExposure
+\\
+FLIGetExposureStatus
+\\
+FLISetExposureTime\strut}
+\begin{cxxdoc}
+
+End an exposure for a given camera.  This function causes the exposure
+to end and image download begins immediately.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLITriggerExposure}
+        {(flidev\_t\ dev)}
+        { Trigger an exposure that is awaiting an external trigger.}
+        {3.3}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to trigger the exposure of.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIExposeFrame
+\\
+FLICancelExposure
+\\
+FLIEndExposure
+\\
+FLIGetExposureStatus
+\\
+FLISetExposureTime\strut}
+\begin{cxxdoc}
+
+Trigger an exposure that is awaiting an external trigger. This is a 
+software override for the external trigger option.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIClose}
+        {(flidev\_t\ dev)}
+        { Close a handle to a FLI device  }
+        {3.4}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & The device handle to be closed.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIOpen\strut}
+\begin{cxxdoc}
+
+Close a handle to a FLI device
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGetArrayArea}
+        {(flidev\_t\ dev,\ long*\ ul\_x,\ long*\ ul\_y,\ long*\ lr\_x,\ long*\ lr\_y)}
+        { Get the array area of the given camera.}
+        {3.5}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to get the array area of.
+\\
+{\tt\strut ul\_x} & Pointer to where the upper-left x-coordinate is to beplaced.
+\\
+{\tt\strut ul\_y} & Pointer to where the upper-left y-coordinate is to beplaced.
+\\
+{\tt\strut lr\_x} & Pointer to where the lower-right x-coordinate is to beplaced.
+\\
+{\tt\strut lr\_y} & Pointer to where the lower-right y-coordinate is to beplaced.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIGetVisibleArea
+\\
+FLISetImageArea\strut}
+\begin{cxxdoc}
+
+Get the array area of the given camera.  This function finds the
+\emph{total} area of the CCD array for camera \texttt{dev}.  This
+area is specified in terms of a upper-left point and a lower-right
+point.  The upper-left x-coordinate is placed in \texttt{ul\_x}, the
+upper-left y-coordinate is placed in \texttt{ul\_y}, the lower-right
+x-coordinate is placed in \texttt{lr\_x}, and the lower-right
+y-coordinate is placed in \texttt{lr\_y}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIFlushRow}
+        {(flidev\_t\ dev,\ long\ rows,\ long\ repeat)}
+        { Flush rows of a given camera.}
+        {3.6}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to flush rows of.
+\\
+{\tt\strut rows} & Number of rows to flush.
+\\
+{\tt\strut repeat} & Number of times to flush each row.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLISetNFlushes\strut}
+\begin{cxxdoc}
+
+Flush rows of a given camera.  This function flushes \texttt{rows}
+rows of camera \texttt{dev} \texttt{repeat} times.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGetFWRevision}
+        {(flidev\_t\ dev,\ long*\ fwrev)}
+        { Get firmware revision of a given device  }
+        {3.7}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Device to find the firmware revision of.
+\\
+{\tt\strut fwrev} & Pointer to a long which will receive the firmwarerevision.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIGetModel
+\\
+FLIGetHWRevision
+\\
+FLIGetSerialNum\strut}
+\begin{cxxdoc}
+
+Get firmware revision of a given device
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGetHWRevision}
+        {(flidev\_t\ dev,\ long*\ hwrev)}
+        { Get the hardware revision of a given device  }
+        {3.8}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Device to find the hardware revision of.
+\\
+{\tt\strut hwrev} & Pointer to a long which will receive the hardwarerevision.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIGetModel
+\\
+FLIGetFWRevision
+\\
+FLIGetSerialNum\strut}
+\begin{cxxdoc}
+
+Get the hardware revision of a given device
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGetLibVersion}
+        {(char*\ ver,\ size\_t\ len)}
+        { Get the current library version.}
+        {3.9}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut ver} & Pointer to a character buffer where the library versionstring is to be placed.
+\\
+{\tt\strut len} & The size in bytes of the buffer pointed to by\texttt{ver}.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\begin{cxxdoc}
+
+Get the current library version.  This function copies up to
+\texttt{len - 1} characters of the current library version string
+followed by a terminating \texttt{NULL} character into the buffer
+pointed to by \texttt{ver}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGetSerialString}
+        {(flidev\_t\ dev,\ char*\ serial,\ size\_t\ len)}
+        { Get the serial string of a given device.}
+        {3.10}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Device to find serial of.
+\\
+{\tt\strut serial} & Pointer to a character buffer where the serial stringis to be placed.
+\\
+{\tt\strut len} & The size in bytes of buffer pointed to by\exttt{serial}..
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIGetHWRevision
+\\
+FLIGetFWRevision
+\\
+FLIGetModel\strut}
+\begin{cxxdoc}
+
+Get the serial string of a given device.  This function copies up to
+\texttt{len - 1} characters of the serial string for device
+\texttt{dev}, followed by a terminating \texttt{NULL} character
+into the buffer pointed to by \texttt{serial}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGetModel}
+        {(flidev\_t\ dev,\ char*\ model,\ size\_t\ len)}
+        { Get the model of a given device.}
+        {3.11}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Device to find model of.
+\\
+{\tt\strut model} & Pointer to a character buffer where the model stringis t be placed..
+\\
+{\tt\strut len} & The size in bytes of buffer pointed to by\texttt{model}.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIGetHWRevision
+\\
+FLIGetFWRevision
+\\
+FLIGetSerialNum\strut}
+\begin{cxxdoc}
+
+Get the model of a given device.  This function copies up to
+\texttt{len - 1} characters of the model string for device
+\texttt{dev}, followed by a terminating \texttt{NULL} character
+into the buffer pointed to by \texttt{model}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGetPixelSize}
+        {(flidev\_t\ dev,\ double*\ pixel\_x,\ double*\ pixel\_y)}
+        { Find the dimensions of a pixel in the array of the given device  }
+        {3.12}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Device to find the pixel size of.
+\\
+{\tt\strut pixel\_x} & Pointer to a double which will receive the size (inmicons) of a piixel in the x direction.
+\\
+{\tt\strut pixel\_y} & Pointer to a double which will receive the size (inmicons) of a piixel in the y direction.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIGetArrayArea
+\\
+FLIGetVisibleArea\strut}
+\begin{cxxdoc}
+
+Find the dimensions of a pixel in the array of the given device
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGetVisibleArea}
+        {(flidev\_t\ dev,\ long*\ ul\_x,\ long*\ ul\_y,\ long*\ lr\_x,\ long*\ lr\_y)}
+        { Get the visible area of the given camera.}
+        {3.13}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to get the visible area of.
+\\
+{\tt\strut ul\_x} & Pointer to where the upper-left x-coordinate is to beplaced.
+\\
+{\tt\strut ul\_y} & Pointer to where the upper-left y-coordinate is to beplaced.
+\\
+{\tt\strut lr\_x} & Pointer to where the lower-right x-coordinate is to beplaced.
+\\
+{\tt\strut lr\_y} & Pointer to where the lower-right y-coordinate is to beplaced.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIGetArrayArea
+\\
+FLISetImageArea\strut}
+\begin{cxxdoc}
+
+Get the visible area of the given camera.  This function finds the
+\emph{visible} area of the CCD array for the camera \texttt{dev}.
+This area is specified in terms of a upper-left point and a
+lower-right point.  The upper-left x-coordinate is placed in
+\texttt{ul\_x}, the upper-left y-coordinate is placed in
+\texttt{ul\_y}, the lower-right x-coordinate is placed in
+\texttt{lr\_x}, the lower-right y-coordinate is placed in
+\texttt{lr\_y}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIOpen}
+        {(flidev\_t*\ dev,\ char*\ name,\ flidomain\_t\ domain)}
+        { Get a handle to an FLI device.}
+        {3.14}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Pointer to where a device handle will be placed.
+\\
+{\tt\strut name} & Pointer to a string where the device filename to beopenedis storedd.  For parallel port devices that are not probed by\ettt{FLIList())} (Windows 95/98/Me), place the  address of theprllel port in  a string in ascii form ie: "0x3778".
+\\
+{\tt\strut domain} & Domain to apply to \texttt{name} for device opening.Thi is a bitwisse ORed combination of interface method and devicetpe.  Valid intterfaces include texttt{FLIDOMAIIN\_PARALLEL\_PORT},\texttt{FLIDOMAIN\_USB}, \textt{FLIDOMAIN\_SERIIAL}, and\texttt{LIDOMAIIN\_INET}.  Valid device ypes include\textt{FLIDEVICCEE\_CAMERA}, \texttt{FLIDOMAIN\_FILTEWHEEL}, and\ttextt{FLIDOMAAIN\_FOCUSER}.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIList
+\\
+FLIClose
+\\
+flidomain\_t\strut}
+\begin{cxxdoc}
+
+Get a handle to an FLI device. This function requires the filename
+and domain of the requested device. Valid device filenames can be
+obtained using the \texttt{FLIList()} function. An application may
+use any number of handles associated with the same physical
+device. When doing so, it is important to lock the appropriate
+device to ensure that multiple accesses to the same device do not
+occur during critical operations.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLISetDebugLevel}
+        {(char*\ host,\ flidebug\_t\ level)}
+        { Enable debugging of API operations and communications.}
+        {3.15}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut host} & Name of the file to send debugging information to.This paameter iis ignored under Linux where \texttt{syslog(3)} isused o send debbug messages (see \texttt{syslog.conf(5)} for how toconfigure syslogd).
+\\
+{\tt\strut level} & Debug level.  A value of \texttt{FLIDEBUG\_NONE} disablesdebugging.  Values of \texttt{FLIDEBUG\_FAIL}, \texttt{FLIDEBUG\_WARN}, and\textt{FLIDEBUGG\_INFO enable progressively more verbbose debug messages.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\begin{cxxdoc}
+
+Enable debugging of API operations and communications. Use this
+function in combination with FLIDebug to assist in diagnosing
+problems that may be encountered during programming.
+
+When usings Microsoft Windows operating systems, creating an empty file
+C:\\FLIDBG.TXT will override this option. All debug output will
+then be directed to this file.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLISetExposureTime}
+        {(flidev\_t\ dev,\ long\ exptime)}
+        { Set the exposure time for a camera.}
+        {3.16}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to set the exposure time of.
+\\
+{\tt\strut exptime} & Exposure time in msec.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIExposeFrame
+\\
+FLICancelExposure
+\\
+FLIGetExposureStatus\strut}
+\begin{cxxdoc}
+
+Set the exposure time for a camera.  This function sets the
+exposure time for the camera \texttt{dev} to \texttt{exptime} msec.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLISetHBin}
+        {(flidev\_t\ dev,\ long\ hbin)}
+        { Set the horizontal bin factor for a given camera.}
+        {3.17}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to set horizontal bin factor of.
+\\
+{\tt\strut hbin} & Horizontal bin factor.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLISetVBin
+\\
+FLISetImageArea\strut}
+\begin{cxxdoc}
+
+Set the horizontal bin factor for a given camera.  This function
+sets the horizontal bin factor for the camera \texttt{dev} to
+\texttt{hbin}.  The valid range of the \texttt{hbin} parameter is
+from 1 to 16.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLISetFrameType}
+        {(flidev\_t\ dev,\ fliframe\_t\ frametype)}
+        { Set the frame type for a given camera.}
+        {3.18}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut cam} & Camera to set the frame type of.
+\\
+{\tt\strut frametype} & Frame type: \texttt{FLI\_FRAME\_TYPE\_NORMAL} or \texttt{FLI\_FRAME\_TYPE\_DARK}.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{fliframe\_t
+\\
+FLIExposeFrame\strut}
+\begin{cxxdoc}
+
+Set the frame type for a given camera.  This function sets the frame type
+for camera \texttt{dev} to \texttt{frametype}.  The \texttt{frametype}
+parameter is either \texttt{FLI\_FRAME\_TYPE\_NORMAL} for a normal frame
+where the shutter opens or \texttt{FLI\_FRAME\_TYPE\_DARK} for a dark frame
+where the shutter remains closed.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGetCoolerPower}
+        {(flidev\_t\ dev,\ double*\ power)}
+        { Get the cooler power level.}
+        {3.19}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to find the cooler power of.
+\\
+{\tt\strut timeleft} & Pointer to where the cooler power (in percent) will be placed.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLISetTemperature
+\\
+FLIGetTemperature\strut}
+\begin{cxxdoc}
+
+Get the cooler power level. The function places the current cooler
+power in percent in the
+location pointed to by \texttt{power}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLISetImageArea}
+        {(flidev\_t\ dev,\ long\ ul\_x,\ long\ ul\_y,\ long\ lr\_x,\ long\ lr\_y)}
+        { Set the image area for a given camera.}
+        {3.20}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to set image area of.
+\\
+{\tt\strut ul\_x} & Upper-left x-coordinate of image area.
+\\
+{\tt\strut ul\_y} & Upper-left y-coordinate of image area.
+\\
+{\tt\strut lr\_x} & Lower-right x-coordinate of image area ($lr_x'$ fromabove).
+\\
+{\tt\strut lr\_y} & Lower-right y-coordinate of image area ($lr_y'$ fromabove).
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIGetVisibleArea
+\\
+FLIGetArrayArea\strut}
+\begin{cxxdoc}
+
+Set the image area for a given camera.  This function sets the
+image area for camera \texttt{dev} to an area specified in terms of
+a upper-left point and a lower-right point.  The upper-left
+x-coordinate is \texttt{ul\_x}, the upper-left y-coordinate is
+\texttt{ul\_y}, the lower-right x-coordinate is \texttt{lr\_x}, and
+the lower-right y-coordinate is \texttt{lr\_y}.  Note that the given
+lower-right coordinate must take into account the horizontal and
+vertical bin factor settings, but the upper-left coordinate is
+absolute.  In other words, the lower-right coordinate used to set
+the image area is a virtual point $(lr_x', lr_y')$ determined by:
+
+\[ lr_x' = ul_x + (lr_x - ul_x) / hbin \]
+\[ lr_y' = ul_y + (lr_y - ul_y) / vbin \]
+
+Where $(lr_x', lr_y')$ is the coordinate to pass to the
+\texttt{FLISetImageArea} function, $(ul_x, ul_y)$ and $(lr_x,
+lr_y)$ are the absolute coordinates of the desired image area,
+$hbin$ is the horizontal bin factor, and $vbin$ is the vertical bin
+factor.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLISetVBin}
+        {(flidev\_t\ dev,\ long\ vbin)}
+        { Set the vertical bin factor for a given camera.}
+        {3.21}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to set vertical bin factor of.
+\\
+{\tt\strut vbin} & Vertical bin factor.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLISetHBin
+\\
+FLISetImageArea\strut}
+\begin{cxxdoc}
+
+Set the vertical bin factor for a given camera.  This function sets
+the vertical bin factor for the camera \texttt{dev} to
+\texttt{vbin}.  The valid range of the \texttt{vbin} parameter is
+from 1 to 16.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGetExposureStatus}
+        {(flidev\_t\ dev,\ long*\ timeleft)}
+        { Find the remaining exposure time of a given camera.}
+        {3.22}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to find the remaining exposure time of.
+\\
+{\tt\strut timeleft} & Pointer to where the remaining exposure time (in milliseonds) will be placed.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIExposeFrame
+\\
+FLICancelExposure
+\\
+FLISetExposureTime\strut}
+\begin{cxxdoc}
+
+Find the remaining exposure time of a given camera.  This functions
+places the remaining exposure time (in milliseconds) in the
+location pointed to by \texttt{timeleft}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLISetTemperature}
+        {(flidev\_t\ dev,\ double\ temperature)}
+        { Set the temperature of a given camera.}
+        {3.23}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera device to set the temperature of.
+\\
+{\tt\strut temperature} & Temperature in Celsius to set CCD camera cold finger to.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIGetTemperature\strut}
+\begin{cxxdoc}
+
+Set the temperature of a given camera.  This function sets the
+temperature of the CCD camera \texttt{dev} to \texttt{temperature}
+degrees Celsius.  The valid range of the \texttt{temperature}
+parameter is from -55 C to 45 C.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGetTemperature}
+        {(flidev\_t\ dev,\ double*\ temperature)}
+        { Get the temperature of a given camera.}
+        {3.24}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera device to get the temperature of.
+\\
+{\tt\strut temperature} & Pointer to where the temperature will be placed.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLISetTemperature\strut}
+\begin{cxxdoc}
+
+Get the temperature of a given camera.  This function places the
+temperature of the CCD camera cold finger of device \texttt{dev} in
+the location pointed to by \texttt{temperature}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGrabRow}
+        {(flidev\_t\ dev,\ void*\ buff,\ size\_t\ width)}
+        { Grab a row of an image.}
+        {3.25}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera whose image to grab the next available row from.
+\\
+{\tt\strut buff} & Pointer to where the next available row will be placed.
+\\
+{\tt\strut width} & Row width in pixels.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIGrabFrame\strut}
+\begin{cxxdoc}
+
+Grab a row of an image.  This function grabs the next available row
+of the image from camera device \texttt{dev}.  The row of width
+\texttt{width} is placed in the buffer pointed to by \texttt{buff}.
+The size of the buffer pointed to by \texttt{buff} must take into
+account the bit depth of the image, meaning the buffer size must be
+at least \texttt{width} bytes for an 8-bit image, and at least
+2*\texttt{width} for a 16-bit image.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIExposeFrame}
+        {(flidev\_t\ dev)}
+        { Expose a frame for a given camera.}
+        {3.26}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to expose the frame of.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLISetExposureTime
+\\
+FLISetFrameType
+\\
+FLISetImageArea
+\\
+FLISetHBin
+\\
+FLISetVBin
+\\
+FLISetNFlushes
+\\
+FLISetBitDepth
+\\
+FLIGrabFrame
+\\
+FLICancelExposure
+\\
+FLIGetExposureStatus\strut}
+\begin{cxxdoc}
+
+Expose a frame for a given camera.  This function exposes a frame
+according to the settings (image area, exposure time, bit depth,
+etc.) of camera \texttt{dev}.  The settings of \texttt{dev} must be
+valid for the camera device.  They are set by calling the
+appropriate set library functions.  This function returns after the
+exposure has started.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLISetBitDepth}
+        {(flidev\_t\ dev,\ flibitdepth\_t\ bitdepth)}
+        { Set the gray-scale bit depth for a given camera.}
+        {3.27}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to set the bit depth of.
+\\
+{\tt\strut bitdepth} & Gray-scale bit depth: \texttt{FLI\_MODE\_8BIT} or\textt{FLI\_MODEE\_16BIT}.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{flibitdepth\_t
+\\
+FLIExposeFrame\strut}
+\begin{cxxdoc}
+
+Set the gray-scale bit depth for a given camera.  This function
+sets the gray-scale bit depth of camera \texttt{dev} to
+\texttt{bitdepth}.  The \texttt{bitdepth} parameter is either
+\texttt{FLI\_MODE\_8BIT} for 8-bit mode or \texttt{FLI\_MODE\_16BIT}
+for 16-bit mode. Many cameras do not support this mode.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLISetNFlushes}
+        {(flidev\_t\ dev,\ long\ nflushes)}
+        { Set the number of flushes for a given camera.}
+        {3.28}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to set the number of flushes of.
+\\
+{\tt\strut nflushes} & Number of times to flush CCD array before anexposure.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIFlushRow
+\\
+FLIExposeFrame
+\\
+FLIControlBackgroundFlush\strut}
+\begin{cxxdoc}
+
+Set the number of flushes for a given camera.  This function sets
+the number of times the CCD array of camera \texttt{dev} is flushed by
+the FLIExposeFrame \emph{before} exposing a frame
+to \texttt{nflushes}.  The valid range of the \texttt{nflushes}
+parameter is from 0 to 16. Some FLI cameras support background flushing.
+Background flushing continuously flushes the CCD eliminating the need for
+pre-exposure flushing.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIReadIOPort}
+        {(flidev\_t\ dev,\ long*\ ioportset)}
+        { Read the I/O port of a given camera.}
+        {3.29}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to read the I/O port of.
+\\
+{\tt\strut ioportset} & Pointer to where the I/O port data will be stored.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIWriteIOPort
+\\
+FLIConfigureIOPort\strut}
+\begin{cxxdoc}
+
+Read the I/O port of a given camera.  This function reads the I/O
+port on camera \texttt{dev} and places the value in the location
+pointed to by \texttt{ioportset}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIWriteIOPort}
+        {(flidev\_t\ dev,\ long\ ioportset)}
+        { Write to the I/O port of a given camera.}
+        {3.30}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to write I/O port of.
+\\
+{\tt\strut ioportset} & Data to be written to the I/O port.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIReadIOPort
+\\
+FLIConfigureIOPort\strut}
+\begin{cxxdoc}
+
+Write to the I/O port of a given camera.  This function writes the
+value \texttt{ioportset} to the I/O port on camera \texttt{dev}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIConfigureIOPort}
+        {(flidev\_t\ dev,\ long\ ioportset)}
+        { Configure the I/O port of a given camera.}
+        {3.31}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Camera to configure the I/O port of.
+\\
+{\tt\strut ioportset} & Data to configure the I/O port with.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIReadIOPort
+\\
+FLIWriteIOPort\strut}
+\begin{cxxdoc}
+
+Configure the I/O port of a given camera.  This function configures
+the I/O port on camera \texttt{dev} with the value
+\texttt{ioportset}.
+
+The I/O configuration of each pin on a given camera is determined by the
+value of \texttt{ioportset}.  Setting a respective I/O bit enables the
+port bit for output while clearing an I/O bit enables to port bit for
+input. By default, all I/O ports are configured as inputs.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLILockDevice}
+        {(flidev\_t\ dev)}
+        { Lock a specified device.}
+        {3.32}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Device to lock.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIUnlockDevice\strut}
+\begin{cxxdoc}
+
+Lock a specified device.  This function establishes an exclusive
+lock (mutex) on the given device to prevent access to the device by
+any other function or process.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIUnlockDevice}
+        {(flidev\_t\ dev)}
+        { Unlock a specified device.}
+        {3.33}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Device to unlock.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLILockDevice\strut}
+\begin{cxxdoc}
+
+Unlock a specified device.  This function releases a previously
+established exclusive lock (mutex) on the given device to allow
+access to the device by any other function or process.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIControlShutter}
+        {(flidev\_t\ dev,\ flishutter\_t\ shutter)}
+        { Control the shutter on a given camera.}
+        {3.34}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Device to control the shutter of.
+\\
+{\tt\strut shutter} & How to control the shutter.  A value of\texttt{FLI\_SHUTTER\_CLOSE} closes the shutter and\texttt{FLI\_SUTTTER\_OPEN} opens the shutter.\exttt{FLI\_SHUTTTER\_EXTERNAL\_TTRIGGER\_LOW}, \texttt{FLI\_SHUTTER\_XERNAL\_TRIGGERR}causes the exposure to beginonywhen a loggiic LOW is detected on I/O port bit 0.\texttt{FLI\_SHTTTER\_EXTERNA\_RGGER\_HIGH}  causes the exposuurre to beginonly wen a logiic HIG is detected on I/O port bit 0.. This settingmaynot be availlable on all cameras.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{flishutter\_t\strut}
+\begin{cxxdoc}
+
+Control the shutter on a given camera.  This function controls the
+shutter function on camera \texttt{dev} according to the
+\texttt{shutter} parameter.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIControlBackgroundFlush}
+        {(flidev\_t\ dev,\ flibgflush\_t\ bgflush)}
+        { Enables background flushing of CCD array.}
+        {3.35}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Device to control the background flushing of.
+\\
+{\tt\strut bgflush} & Enables or disables background flushing. A value of\tettt{FLI\_BGFLLUSH\_START} begins background flushing. It is importnt tonote that ackgrround flushing is stoppedd whenever \texttt{FLIExposeFrame()}or \texttt{FLCoontrolShutter()} are called. \texttt{FLI\_BGFLUSH\_STOP} stops allbackground flshh activity.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{flibgflush\_t\strut}
+\begin{cxxdoc}
+
+Enables background flushing of CCD array.  This function enables the
+background flushing of the CCD array camera \texttt{dev} according to the
+\texttt{bgflush} parameter. Note that this function may not succeed
+on all FLI products as this feature may not be available.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIList}
+        {(flidomain\_t\ domain,\ char***\ names)}
+        { List available devices.}
+        {3.36}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut domain} & Domain to list the devices of.  This is a bitwiseORed cmbinationn of interface method and device type.  Validinterfacsincludde \texttt{FLIDOMAIN\_PARALLEL\_PORT},\ttextt{FLIDOMAAIN\_UB}, \texttt{FLIDOMAIN\_SERIAL}, and\texttt{FLIIDOAAIN\_INET}.  Vaid device types include\textttt{LIDEVIICE\_CAMERA}, \texttt{FLIDMAIN\_FILTERWHEEL}, and\textttt{FIDOMAAIN\_FOCUSER}.
+\\
+{\tt\strut names} & Pointer to where the device name list will be placed.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{flidomain\_t
+\\
+FLIFreeList
+\\
+FLIOpen\strut}
+\begin{cxxdoc}
+
+List available devices.  This function returns a pointer to a NULL
+terminated list of device names.  The pointer should be freed later
+with \texttt{FLIFreeList()}.  Each device name in the returned list
+includes the filename needed by \texttt{FLIOpen()}, a separating
+semicolon, followed by the model name or user assigned device name.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIFreeList}
+        {(char**\ names)}
+        { Free a previously generated device list.}
+        {3.37}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut names} & Pointer to the list.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIList\strut}
+\begin{cxxdoc}
+
+Free a previously generated device list.  Use this function after
+\texttt{FLIList()} to free the list of device names.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLISetFilterPos}
+        {(flidev\_t\ dev,\ long\ filter)}
+        { Set the filter wheel position of a given device.}
+        {3.38}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Filter wheel device handle.
+\\
+{\tt\strut filter} & Desired filter wheel position.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIGetFilterPos\strut}
+\begin{cxxdoc}
+
+Set the filter wheel position of a given device.  Use this function
+to set the filter wheel position of \texttt{dev} to
+\texttt{filter}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGetFilterPos}
+        {(flidev\_t\ dev,\ long*\ filter)}
+        { Get the filter wheel position of a given device.}
+        {3.39}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Filter wheel device handle.
+\\
+{\tt\strut filter} & Pointer to where the filter wheel position will beplaced.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLISetFilterPos\strut}
+\begin{cxxdoc}
+
+Get the filter wheel position of a given device.  Use this function
+to get the filter wheel position of \texttt{dev}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGetStepsRemaining}
+        {(flidev\_t\ dev,\ long*\ steps)}
+        { Get the number of motor steps remaining.}
+        {3.40}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Filter wheel device handle.
+\\
+{\tt\strut filter} & Pointer to where the number of remaning steps will beplaced.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLISetFilterPos\strut}
+\begin{cxxdoc}
+
+Get the number of motor steps remaining. Use this function
+to determine if the stepper motor of \texttt{dev} is still moving.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGetFilterCount}
+        {(flidev\_t\ dev,\ long*\ filter)}
+        { Get the filter wheel filter count of a given device.}
+        {3.41}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Filter wheel device handle.
+\\
+{\tt\strut filter} & Pointer to where the filter wheel filter count willbe placed.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\begin{cxxdoc}
+
+Get the filter wheel filter count of a given device.  Use this
+function to get the filter count of filter wheel \texttt{dev}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIStepMotorAsync}
+        {(flidev\_t\ dev,\ long\ steps)}
+        { Step the filter wheel or focuser motor of a given device.}
+        {3.42}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Filter wheel or focuser device handle.
+\\
+{\tt\strut steps} & Number of steps to move the focuser or filter wheel.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIGetStepperPosition\strut}
+\begin{cxxdoc}
+
+Step the filter wheel or focuser motor of a given device.  Use this
+function to move the focuser or filter wheel \texttt{dev} by an
+amount \texttt{steps}. This function is non-blocking.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIStepMotor}
+        {(flidev\_t\ dev,\ long\ steps)}
+        { Step the filter wheel or focuser motor of a given device.}
+        {3.43}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Filter wheel or focuser device handle.
+\\
+{\tt\strut steps} & Number of steps to move the focuser or filter wheel.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIGetStepperPosition\strut}
+\begin{cxxdoc}
+
+Step the filter wheel or focuser motor of a given device.  Use this
+function to move the focuser or filter wheel \texttt{dev} by an
+amount \texttt{steps}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGetStepperPosition}
+        {(flidev\_t\ dev,\ long*\ position)}
+        { Get the stepper motor position of a given device.}
+        {3.44}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Filter wheel or focuser device handle.
+\\
+{\tt\strut position} & Pointer to where the postion of the stepper motorwill be placed.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIStepMotor\strut}
+\begin{cxxdoc}
+
+Get the stepper motor position of a given device.  Use this
+function to read the stepper motor position of filter wheel or
+focuser \texttt{dev}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIHomeDevice}
+        {(flidev\_t\ dev)}
+        { Home focuser or filter wheel specified by \texttt{dev} The home position of a device is defined as where the electromechanical home sensor detects home.}
+        {3.45}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Device handle.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIGetDeviceStatus\strut}
+\begin{cxxdoc}
+
+Home focuser or filter wheel specified by \texttt{dev}
+The home position of a device is defined as where the electromechanical
+home sensor detects home. Note that on color filter wheels this may not
+be located at filter slot zero and may in fact be between filter slots.
+It should be noted that this function replaces the deprecated function
+FLIHomeFocuser(). This function may not return immediately as older FLI devices
+blocked during a HOME operation. Use the function FLIGetDeviceStatus() to
+determine if the filter wheel or focuser is still moving (or is capable of reporting
+device status).
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIHomeFocuser}
+        {(flidev\_t\ dev)}
+        { Home focuser \texttt{dev}.}
+        {3.46}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Focuser device handle.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\begin{cxxdoc}
+
+Home focuser \texttt{dev}. The home position is closed as far as mechanically possiable.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIGetFocuserExtent}
+        {(flidev\_t\ dev,\ long*\ extent)}
+        { Retreive the maximum extent for FLI focuser \texttt{dev}  }
+        {3.47}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Focuser device handle.
+\\
+{\tt\strut extent} & Pointer to where the maximum extent of the focuser will be placed.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\begin{cxxdoc}
+
+Retreive the maximum extent for FLI focuser \texttt{dev}
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIReadTemperature}
+        {(flidev\_t\ dev,\ flichannel\_t\ channel,\ double*\ temperature)}
+        { Retreive temperature from the FLI focuser \texttt{dev}.}
+        {3.48}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut dev} & Focuser device handle.
+\\
+{\tt\strut channel} & Channel to be read.
+\\
+{\tt\strut extent} & Pointer to where the channel temperature will be placed.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\begin{cxxdoc}
+
+Retreive temperature from the FLI focuser \texttt{dev}. Valid channels are
+\texttt{FLI\_TEMPERATURE\_INTERNAL} and \texttt{FLI\_TEMPERATURE\_EXTERNAL}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLICreateList}
+        {(flidomain\_t\ domain)}
+        { Creates a list of all devices within a specified \texttt{domain}.}
+        {3.49}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut domain} & Domain to search for devices, set to zero to search all domains.This paameter mmust contain the device type.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLIDeleteList
+\\
+FLIListFirst
+\\
+FLIListNext\strut}
+\begin{cxxdoc}
+
+Creates a list of all devices within a specified
+\texttt{domain}. Use \texttt{FLIDeleteList()} to delete the list
+created with this function. This function is the first called begin
+the iteration through the list of current FLI devices attached.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIDeleteList}
+        {(void)}
+        { Deletes a list of devices created by \texttt{FLICreateList()}  }
+        {3.50}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLICreateList
+\\
+FLIListFirst
+\\
+FLIListNext\strut}
+\begin{cxxdoc}
+
+Deletes a list of devices created by \texttt{FLICreateList()}
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIListFirst}
+        {(flidomain\_t*\ domain,\ char*\ filename,\ size\_t\ fnlen,\ char*\ name,\ size\_t\ namelen)}
+        { Obtains the first device in the list.}
+        {3.51}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut domain} & Pointer to where to domain of the device will be placed.
+\\
+{\tt\strut filename} & Pointer to where the filename of the device will be placed.
+\\
+{\tt\strut fnlen} & Length of the supplied buffer to hold the filename.
+\\
+{\tt\strut name} & Pointer to where the name of the device will be placed.
+\\
+{\tt\strut namelen} & Length of the supplied buffer to hold the name.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLICreateList
+\\
+FLIDeleteList
+\\
+FLIListNext\strut}
+\begin{cxxdoc}
+
+Obtains the first device in the list. Use this function to
+get the first \texttt{domain}, \texttt{filename} and \texttt{name}
+from the list of attached FLI devices created using
+the function \texttt{FLICreateList()}. Use
+\texttt{FLIListNext()} to obtain more found devices.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\begin{cxxfunction}
+{LIBFLIAPI}
+        {FLIListNext}
+        {(flidomain\_t*\ domain,\ char*\ filename,\ size\_t\ fnlen,\ char*\ name,\ size\_t\ namelen)}
+        { Obtains the next device in the list.}
+        {3.52}
+\cxxParameter{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut domain} & Pointer to where to domain of the device will be placed.
+\\
+{\tt\strut filename} & Pointer to where the filename of the device will be placed.
+\\
+{\tt\strut fnlen} & Length of the supplied buffer to hold the filename.
+\\
+{\tt\strut name} & Pointer to where the name of the device will be placed.
+\\
+{\tt\strut namelen} & Length of the supplied buffer to hold the name.
+\end{tabular}}
+\cxxReturn{
+\begin{tabular}[t]{lp{0.5\textwidth}}
+{\tt\strut Zero} & on success.
+\\
+{\tt\strut Non-zero} & on failure.
+\end{tabular}}
+\cxxSee{FLICreateList
+\\
+FLIDeleteList
+\\
+FLIListFirst\strut}
+\begin{cxxdoc}
+
+Obtains the next device in the list. Use this function to
+get the next \texttt{domain}, \texttt{filename} and \texttt{name}
+from the list of attached FLI devices created using
+the function \texttt{FLICreateList()}.
+
+
+\end{cxxdoc}
+\end{cxxfunction}
+\end{cxxentry}
+\end{document}
