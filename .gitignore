@@ -1,0 +1,21 @@
+*.pyc
+.pytest_cache
+__pycache__
+.vscode
+
+# python install
+*.egg-info
+
+# for drivers
+.cache.mk
+.tmp_versions
+# some debug executables
+*.o.d
+*.symvers
+*.order
+*.ko
+
+# executables
+*.o
+# static libraries
+*.a
